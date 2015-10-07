@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Your Homework Rendering (colorful)</title>
+ 
+<script type="text/javascript" src="js/rendering-filled-circles.js"></script>
+ 
+ <script type="text/javascript">
+ 
+// WebGL rendering context
+var gl = null;
+
+function draw() {
+
+	renderTriangle(gl);
+}
+
+function timedShaders(){
+	initShaders(gl);
+}
+
+function timedBuffers(){
+	initBuffers(gl);
+}
+
+function start() {
+
+	var canvas = document.getElementById("canvas");
+
+	// Initialize the OpenGL rendering context
+	gl = canvas.getContext("experimental-webgl");
+	   
+	// Only continue if WebGL is available and working
+	if (gl)  {
+		
+		// initialize shader programs 
+		if(Number(document.getElementById("numTri").value) == 0){
+			initShaders(gl);
+			initBuffers(gl);
+			setInterval(draw1, 1000);
+		}
+		else {
+			initShaders(gl);
+			initBuffers(gl);
+			draw();
+		}
+		// initialize a very simple scene, a triangle
+	
+		// call the draw() function every 20 milliseconds
+	}
+	else {
+		alert("WebGL initialization failed! Your browser does not support WebGL or it is not properly configured.");	
+	}		
+}
+</script>
+
+</head>
+<body> 
+	<center>
+    <h1> CS578 Assignment1-Q5 PAUL ZL353</h1>
+	<canvas id="canvas" width="500" height="500">
+		If you are seeing this message your web browser does not support the HTML5 &lt;canvas>&gt; element.
+	</canvas>
+    <p>
+    	Which color do you prefer?
+        <br>
+        <input type="checkbox" name="color" id="red" checked>Red
+        <input type="checkbox" name="color" id="green">Green
+        <input type="checkbox" name="color" id="blue">Blue
+    	<br>
+        Which type, then?
+        <br>
+        <input id = "gradChange" type = "radio" name = "changeType" checked/> Gradually Change
+       <input id = "beachBall" type = "radio" name = "changeType" /> Beach Ball 
+        <br>
+    	Number of Triangles <input id="numTri" type="number" /><br>
+        <input type="submit" onClick="start()">
+    </p>
+	</center>
+</body>
+</html>

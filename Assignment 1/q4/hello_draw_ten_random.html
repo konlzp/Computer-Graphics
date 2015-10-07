@@ -1,0 +1,103 @@
+<html>
+  <head>
+    <script type="text/javascript">
+		// global variables
+		var gl                  = null;
+		var positionAttribIndex = 0;
+		var randomRange = 0.4;
+
+		function setupWebGL() {
+			var canvas = document.getElementById("OUTPUT-CANVAS");
+			gl = canvas.getContext("experimental-webgl");
+		}
+
+		function setupWhatToDraw() {
+			var positions = [];
+
+			
+			for(i = 0; i < 10; i ++) {
+				temp1 = Math.random() * 2 -1;
+				temp2 = Math.random() * 2 -1;
+				positions.push(temp1);
+				positions.push(temp2);
+				positions.push((Math.random() * randomRange + temp1) % 1);
+				positions.push((Math.random() * randomRange + temp2) % 1);
+				positions.push((Math.random() * randomRange + temp1) % 1);
+				positions.push((Math.random() * randomRange + temp2) % 1);
+			}
+			var typedPositions = new Float32Array(positions);
+
+			var positionsBuffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, positionsBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, typedPositions,gl.STATIC_DRAW);
+			
+			
+			
+
+			gl.enableVertexAttribArray(positionAttribIndex);
+			gl.vertexAttribPointer(positionAttribIndex,
+				2, gl.FLOAT, false, 0, 0);
+		}
+
+		function setupHowToDraw() {
+			// vertex shader
+			var vsSource = "\
+				attribute vec2 aPosition;                   \n\
+															\n\
+				void main(void)                             \n\
+				{                                           \n\
+				  gl_Position = vec4(aPosition, 0.0, 1.0);  \n\
+				}                                           \n\
+			";
+			var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+			gl.shaderSource(vertexShader, vsSource);
+			gl.compileShader(vertexShader);
+
+			// fragment shader
+			// changed alpha
+			var fsSource = "\
+				void main(void)                             \n\
+				{                                           \n\
+				  gl_FragColor = vec4(0.0, 0.0, 1.0, 0.5);  \n\
+				}                                           \n\
+			";
+			var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+			gl.shaderSource(fragmentShader, fsSource);
+			gl.compileShader(fragmentShader);
+
+			// program
+			var program = gl.createProgram();
+			gl.attachShader(program, vertexShader);
+			gl.attachShader(program, fragmentShader);
+			gl.bindAttribLocation(program, positionAttribIndex,"aPosition");
+			gl.linkProgram(program);
+			gl.useProgram(program);
+		}
+ 
+		function draw() {
+			gl.clearColor(1.0, 0.0, 0.0, 1.0); //changed background to red
+			gl.clear(gl.COLOR_BUFFER_BIT);
+			gl.drawArrays(gl.TRIANGLES, 0, 30); //changed size of array
+		}
+
+		function helloDraw() {
+			setupWebGL();
+			setupWhatToDraw();
+			setupHowToDraw();
+			draw();
+		}
+
+		window.onload = helloDraw;
+    </script>
+  </head>
+  <body>
+  
+	 <h1> CS578 Assignment1-Q4 ZL353</h1>
+    <canvas
+    	id     = "OUTPUT-CANVAS"
+    	width  = "500px"
+    	height = "500px"
+    	style  = "border: 1px solid black"
+    ></canvas>
+  </body>
+</html>
