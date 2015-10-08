@@ -1,0 +1,79 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Primitives</title>
+ 
+<script type="text/javascript" src="spidergl.js"></script>
+<script type="text/javascript" src="spidergl-config.js"></script>
+<script type="text/javascript" src="primitives.js"></script>
+<script type="text/javascript" src="renderingprimitives.js"></script>
+ 
+ <script type="text/javascript">
+ 
+// OpenGL rendering context
+var gl = null;
+
+// primitive to render
+var primitive = new Sphere_subd(5);
+
+function change(){
+	if(document.getElementById("tetrahedron").checked){
+		primitive = new Tetrahedron(1);
+		initialize(gl, primitive);
+	}
+	else if(document.getElementById("sphere_latlong").checked) {
+		primitive = new Sphere_latlong(Number(document.getElementById("horNum").value), Number(document.getElementById("verNum").value), 1);
+		initialize(gl, primitive);
+	}
+	else if(document.getElementById("sphere_subd").checked) {
+		primitive = new Sphere_subd(Number(document.getElementById("layer").value));
+		initialize(gl, primitive);
+	}
+	else if(document.getElementById("torus").checked) {
+		primitive = new Torus(0.5, 1, Number(document.getElementById("horNumT").value), Number(document.getElementById("verNumT").value));
+		initialize(gl, primitive);
+	}
+}
+
+function draw() {
+	drawThePrimitive(gl, primitive);
+}
+
+function start() {
+
+	var canvas = document.getElementById("canvas");
+
+	// Initialize the OpenGL rendering context
+	gl = canvas.getContext("experimental-webgl");
+	   
+	// Only continue if WebGL is available and working
+	if (gl)  {
+		initialize(gl, primitive);
+		setInterval(draw, 20);	
+	}
+	else {
+		alert("WebGL initialization failed! Your browser does not support WebGL or it is not properly configured.");	
+	}		
+}
+</script>
+
+</head>
+<body onload="start()"> 
+	<center>
+	<canvas id="canvas" width="600" height="400">
+		If you are seeing this message your web browser does not support the HTML5 &lt;canvas>&gt; element.
+	</canvas>
+    <p>
+    <input id = "tetrahedron" type = "radio" name = "changePrim"  onChange="change()"/> Tetra
+    <input id = "sphere_latlong" type = "radio" name = "changePrim" onChange="change()"/> Sphere Latlong
+    <input id="sphere_subd" type="radio" name="changePrim" onChange="change()" checked/> Sphere Subd
+     <input id="torus" type="radio" name="changePrim" onChange="change()"/> Torus
+    </p>
+    Sphere Latlong: horizontal res<input id="horNum" type="number" value="30" onChange="change()"/> vertical res<input id="verNum" type="number" value="30" onChange="change()"/><br>
+    Torus: horizontal res<input id="horNumT" type="number" value="30" onChange="change()"/> vertical res<input id="verNumT" type="number" value="30" onChange="change()"/><br>
+    Sphere Subd: layer<input id="layer" type="number" value="5" onChange="change()"/>
+    <p>
+    </p>
+	</center>
+</body>
+</html>
