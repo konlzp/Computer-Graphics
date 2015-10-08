@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Wanna have some cone?</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <!--<link rel="stylesheet" media="all" href="custom.css" />-->
+</head>
+<body>
+  <div id="container">
+    <div class='cred'>
+        <a href='https://github.com/tmcw/literate-raytracer'>an open source project by tom macwright</a>
+    </div>    
+    <center>
+    <h1> Look at this PARALLELED LIGHT BALL </h1>
+    <canvas id='canvas'></canvas>
+    <div >
+    	<br>
+        <input type="radio" name="light" id="parallel" onClick="render()" checked>Parallel Light
+        <input type="radio" name="light" id="point" onClick="render()">Point Light
+    	<br>
+    	<input type="checkbox" name="recursive" id="recursive" onClick="render()"> Antialiasing? 
+    	<br>
+    	<input type="checkbox" name="primitives" id="sphere" checked onChange="render()">sphere
+        <input type="checkbox" name="primitives" id="triangle"  onChange="render()">triangle
+        <input type="checkbox" name="primitives" id="cone"  onChange="render()">cone
+    	<br>
+    	Sphere Diameter<input type="number" value="1.15" id="diameter" onChange="render()">
+        <br>
+        Light Position x<input type="number" value="3" id="light_x" onChange="render()"> y<input type="number" value="3" id="light_y" onChange="render()"> z<input type="number" value="3" id="light_z" onChange="render()">
+        <br>
+        Sphere COLOR R<input type="number" value="255" id="color_r1" onChange="render()"> G<input type="number" value="80" id="color_g1" onChange="render()"> B<input type="number" value="80" id="color_b1" onChange="render()">
+    	<br>
+        Triangle1 COLOR R<input type="number" value="60" id="color_r2" onChange="render()"> G<input type="number" value="30" id="color_g2" onChange="render()"> B<input type="number" value="0" id="color_b2" onChange="render()">
+        <br>
+        Cone COLOR R<input type="number" value="255" id="color_r3" onChange="render()"> G<input type="number" value="255" id="color_g3" onChange="render()"> B<input type="number" value="0" id="color_b3" onChange="render()">
+        <br>
+        Triangle2 COLOR R<input type="number" value="255" id="color_r4" onChange="render()"> G<input type="number" value="255" id="color_g4" onChange="render()"> B<input type="number" value="200" id="color_b4" onChange="render()">
+        <br>
+        <!--LIGHT x<input type="number" value="0" id="light_x" onChange="render()"> y<input type="number" value="0" id="light_y" onChange="render()"> z<input type="number" value="3" id="light_z" onChange="render()">
+        <br>-->
+        <button id='play' onClick="play()">play</button>
+        <button id='stop' onClick="stopInt()">stop</button>
+    </center>
+  </div>
+  <script src='../vector.js'></script>
+  <script src='../q1.js'></script>
+</body>
+</html>
