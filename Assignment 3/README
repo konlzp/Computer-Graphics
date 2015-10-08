@@ -1,0 +1,11 @@
+For question one, please check out the files in Q1 folder.
+
+The Q2-4 files are all based on the "q1.js¡± and ¡°vector.js¡±(provides many of the calculation functions) at the root folder, so if the image does not load, please check if the file exists.
+
+Q2 asked us to draw a sphere to which a paralleled light shines on. By specifying the values in the rear part of the webpage, the light position, the size of the sphere and the color of the sphere can be set, also we can specify whether a point light source or a paralleled light source is used. 
+
+Antialiasing techniques were used in Q3 to make the spheres looks more natural. The techniques used were basically recursively computing the average of 4 adjacent sample points, until the difference between the average and the sample points is less then a given threshold.
+
+I drew an ice cream cone for Q4, which consists of one cone, one sphere as the ice cream and two triangles as the chocolate plates. Feel free to change the flavor(color) of your personalized ice cream!
+
+Much of the code was inspired by the open source project by tom mcwright.
