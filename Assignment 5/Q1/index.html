@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Wanna have some cone?</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <!--<link rel="stylesheet" media="all" href="custom.css" />-->
+</head>
+<body>
+  <div id="container">
+    <div class='cred'>
+        <a href='https://github.com/tmcw/literate-raytracer'>an open source project by tom macwright</a>
+    </div>    
+    <center>
+    <h1> Look at this PECULIAR SOMETHING!</h1>
+    <canvas id='canvas'></canvas>
+    <div >
+        q<input type="number" value="2" id="qValue"> t<input type="number" value="2" id="tValue">
+        <br />
+        colorR<input type="number" value="255" id="rValue"> colorG<input type="number" value="0" id="gValue"> colorB<input type="number" value="0" id="bValue">
+        <br />
+        lightX<input type="number" value="5" id="light_x"> lightY<input type="number" value="5" id="light_y"> lightZ<input type="number" value="5" id="light_z">
+        <br />
+        eyeX<input type="number" value="0" id="eyeX"> eyeY<input type="number" value="1" id="eyeY"> eyeZ<input type="number" value="5" id="eyeZ">
+        <br />
+        <!--LIGHT x<input type="number" value="0" id="light_x" onChange="render()"> y<input type="number" value="0" id="light_y" onChange="render()"> z<input type="number" value="3" id="light_z" onChange="render()">
+        <br>-->
+        <button id='play' onClick="playIt()">play</button>
+        <button id='stop' onClick="stopInt()">stop</button>
+    </center>
+  </div>
+  <script src='vector.js'></script>
+  <script src='q1.js'></script>
+</body>
+</html>

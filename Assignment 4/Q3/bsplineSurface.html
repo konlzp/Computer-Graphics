@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>BSpline</title>
+ 
+<script type="text/javascript" src="../spidergl.js"></script>
+<script type="text/javascript" src="../spidergl-config.js"></script>
+<script type="text/javascript" src="bspline-patch.js"></script>
+<script type="text/javascript" src="../renderingprimitives.js"></script>
+ 
+ <script type="text/javascript">
+ 
+// OpenGL rendering context
+var gl = null;
+
+// primitive to render
+
+var primitive = null;
+
+var interval = null;
+
+function draw() {
+	drawThePrimitive(gl, primitive);
+}
+
+function start() {
+
+	var canvas = document.getElementById("canvas");
+
+	// Initialize the OpenGL rendering context
+	gl = canvas.getContext("experimental-webgl");
+
+	var zCoordinates = [];
+
+	for(i = 0; i < 4; i ++) {
+		for(j = 0; j < 4; j ++) {
+			zCoordinates.push(Number(document.getElementById("z" + j.toString() + i.toString()).value));
+		}
+	}
+
+	primitive = new Bspline_patch(zCoordinates);
+	   
+	// Only continue if WebGL is available and working
+	if (gl)  {
+		initialize(gl, primitive);
+		if(interval != null) {
+			clearInterval(interval);
+		}
+		interval = setInterval(draw, 20);	
+	}
+	else {
+		alert("WebGL initialization failed! Your browser does not support WebGL or it is not properly configured.");	
+	}		
+}
+</script>
+
+</head>
+<body> 
+	<center>
+	<canvas id="canvas" width="600" height="400">
+		If you are seeing this message your web browser does not support the HTML5 &lt;canvas>&gt; element.
+	</canvas>
+    <p>
+    z00<input type="number" id="z00" value="0"> z10<input type="number" id="z10" value="0"> z20<input type="number" id="z20" value="0"> z30<input type="number" id="z30" value="0"><br />
+    z01<input type="number" id="z01" value="0"> z11<input type="number" id="z11" value="1"> z21<input type="number" id="z21" value="1"> z31<input type="number" id="z31" value="0"><br />
+    z02<input type="number" id="z02" value="0"> z12<input type="number" id="z12" value="1"> z22<input type="number" id="z22" value="1"> z32<input type="number" id="z32" value="0"><br />
+    z03<input type="number" id="z03" value="0"> z13<input type="number" id="z13" value="0"> z23<input type="number" id="z23" value="0"> z33<input type="number" id="z33" value="0"><br />
+    cycle<input type="number" id="cycle" value="5">
+    </p>
+    <p>
+    <input type="button" value="drawBspline" onclick="start()">
+    </p>
+	</center>
+</body>
+</html>

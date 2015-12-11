@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Colors from Spectra</h1>
+
+<p>Select a spectrum to convert to a color</p>
+
+<br>
+<button type="button" onclick="DisplayPlots('Black')">Black</button> 
+<button type="button" onclick="DisplayPlots('White')">White</button> 
+<button type="button" onclick="DisplayPlots('Flower')">Flower</button> 
+<button type="button" onclick="DisplayPlots('Pine')">Pine</button> 
+<button type="button" onclick="DisplayPlots('Grass')">Grass</button> 
+<button type="button" onclick="DisplayPlots('Jeans')">Jeans</button> 
+<button type="button" onclick="DisplayPlots('Marble')">Marble</button> 
+<br> 
+<br>
+<br>
+
+<canvas id="XYZCanvas" width="400" height="400"> </canvas>
+<canvas id="sampleCanvas" width="400" height="400"> </canvas>
+
+
+<script>
+
+var factor = [5.03466883316078, 1.094248584975687, 3.792749678225882];
+
+function Plotit(ccanvas, horizontal,vertical,lcolor){
+		
+		ccanvas.beginPath();
+ 		ccanvas.moveTo(horizontal[0], vertical[0]);
+		for(u=0;u<horizontal.length;u++)
+			{
+			ccanvas.lineTo(horizontal[u], vertical[u]);
+			}
+	
+        	ccanvas.strokeStyle = lcolor;
+		ccanvas.stroke();
+		} 
+
+function DisplayPlots(ccolor) {
+
+	var canvas = document.getElementById("XYZCanvas");
+	var context = canvas.getContext('2d');
+
+	var canvas2 = document.getElementById("sampleCanvas");
+	var context2 = canvas2.getContext('2d');
+
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	context2.clearRect(0, 0, canvas2.width, canvas2.height);
+
+
+
+	//Wavelengths in nanometers
+	var lambda=[400,410,420,430,440,450,460,470,480,490,500,510,520,530,540,550,560,570,580,590,600,610,620,630,640,650,660,670,680,690,700];
+
+	// Spectral values for CIE functions X,Y,Z
+	var X = [0.01431,0.04351,0.13438,0.2839,0.34828,0.3362,0.2908,0.19536,0.09564,0.03201,0.0049,0.0093,0.06327,
+	0.1655,0.2904,0.4334499,0.5945,0.7621,0.9163,1.0263,1.0622,1.0026,0.8544499,0.6424,0.4479,0.2835,0.1649,0.0874,0.04677,0.0227,0.01135916];
+	var Y = [0.000396,0.00121,0.004,0.0116,0.023,0.038,0.06,0.09098,0.13902,0.20802,
+	0.323,0.503,0.71,0.862,0.954,0.9949501,0.995,0.952,0.87,0.757,0.631,0.503,0.381,0.265,0.175,0.107,0.061,0.032,0.017,0.00821,0.004102];
+	var Z =[0.06785001,0.2074,0.6456,1.3856,1.74706,1.77211,1.6692,1.28764,0.8129501,
+	0.46518,0.272,0.1582,0.07824999,0.04216,0.0203,0.008749999,0.0039,0.0021,0.001650001,0.0011,0.0008,0.00034,0.00019,5.00E-05,0.00002,0,0,0,0,0,0];
+
+	// Spectral values for materials
+	var flower =[43,46,46,46,45,44,42,40,38,36,33,28,24,22,22,21,20,21,23,24,25,25,25,27,32,40,47,52,55,56,57];
+	var pine =[10.79,13.36,16.13,18.8,21.27,23.85,26.21,28.68,31.14,33.82,36.18,38.65,41.32,44.1,46.88,49.76,52.53,55.4,58.28,
+	61.063,63.83,66.4,68.98,71.34,73.6,75.66,77.614,79.36,80.9,82.24,83.58];
+	var grass = [3.82,3.88,3.9397,4.014,4.0597,4.1194,4.179,4.2327,4.2894,4.3485,4.5412,5.3314,7.1183,
+	9.2914,10.528,11.022,10.975,10.024,8.6963,7.8833,7.49,7.12,6.59,7.49,5.95,5.212,4.87,4.5,4.5,5.62,9.87];
+	var marble =[66.5,67.24,68.92,69.9,70,71.25,70.45,71.73,71.93,73.54,73.97,73.6,75.05,74.4,75.94,76.56,77.86,
+	78.52,79.05,79.77,79.71,80.58,80.62,80.63,81.38,80.75,81.9,82.02,82.18,82,82];
+	var jeans = [30,42,45,44,42,39,35,32,28,24,22,20,18,14,12,12,12,11,11,12,15,18,20,22,22,25,27,29,32,35,38];
+
+	// Spectral values for black and white
+	var black= [];
+	var white= [];
+	for (i=0;i<lambda.length;i++)
+		{
+		black[i] = 0.0;
+		white[i] = 100.0;
+		}
+	
+	// Select spectrum to use
+	var spectrum = [];
+
+
+	switch(ccolor) {
+    	case "Black":
+        	var spectrum = black;
+        	break;
+    	case "White":
+        	var spectrum = white;
+        	break;
+    	case "Flower":
+        	var spectrum = flower;
+        	break;
+    	case "Pine":
+        	var spectrum = pine;
+        	break;
+	case "Grass":
+        	var spectrum = grass;
+        	break;
+	case "Marble":
+        	var spectrum = marble;
+        	break;
+	case "Jeans":
+        	var spectrum = jeans;
+        	break;
+   	 default:
+        	alert("not implemented");
+	} 
+
+	// scale lambda values for plotting
+	var slambda = [];
+	for (i=0; i<lambda.length; i++)
+		{
+		 slambda[i]= 400.0*(lambda[i]-400.0)/300.0;
+		}
+
+
+// on the left plot X,Y,Z sensitivity curves
+
+      context.font = '8pt Calibri';
+      context.textAlign = 'left';
+      context.fillStyle = 'black';
+      context.fillText('XYZ spectral sensitivities',5,40);
+	
+	//scale for plotting
+	sX = [];
+	sY = [];
+	sZ = [];
+	for (i=0;i< X.length;i++)
+		{
+		sX[i] = 400-X[i]*200;
+		sY[i] = 400-Y[i]*200;
+		sZ[i] = 400-Z[i]*200;
+		}
+	Plotit(context, slambda, sX,'red');
+	Plotit(context, slambda, sY,'green');
+	Plotit(context, slambda, sZ,'blue');
+	
+	 var sspectrum = [];
+	 for (i=0; i< spectrum.length; i++)
+		{
+		sspectrum[i] = 400.-spectrum[i]*4.0;
+		} 
+
+	Plotit(context2, slambda,sspectrum,'black');
+
+	var XYZ = [0, 0, 0];
+
+	for(var index in spectrum) {
+		XYZ[0] += spectrum[index] * X[index];
+		XYZ[1] += spectrum[index] * Y[index];
+		XYZ[2] += spectrum[index] * Z[index];
+	}
+
+	var rgb = [0, 0, 0];
+	rgb[0] = (XYZ[0] * 3.241 - XYZ[1] * 1.5374 - XYZ[2] * 0.4986) / factor[0];
+	rgb[1] = (XYZ[0] * (-0.9692) + XYZ[1] * 1.18760 + XYZ[2] * 0.0416) / factor[1];
+	rgb[2] = (XYZ[0] * 0.0556 - XYZ[1] * 0.204 + XYZ[2] * 1.057) / factor[2];
+
+	var xyzSum = 0;
+	for(var index in XYZ) {
+		xyzSum += XYZ[index];
+	}
+	for(var index in XYZ) {
+		XYZ[index] = XYZ[index] / xyzSum;
+	}
+
+      context2.beginPath();
+      context2.rect(0, 0, 50, 50);
+      context2.fillStyle = 'rgb('+ Math.floor(rgb[0]) + ',' + Math.floor(rgb[1]) + ',' + Math.floor(rgb[2]) + ')';
+      context2.fill();
+      context2.stroke();
+      context2.font = '8pt Calibri';
+      context2.textAlign = 'left';
+      context2.fillStyle = 'black';
+      context2.fillText('rgb('+ Math.floor(rgb[0]) + ',' + Math.floor(rgb[1]) + ',' + Math.floor(rgb[2]) + ')' + 'xyz('+ XYZ[0] + ',' + XYZ[1] + ',' + XYZ[2] + ')', 55,50);
+      context2.fillText(ccolor, 5,60);
+     
+	
+
+}
+
+ 
+</script>
+
+</body>
+</html> 
+
+
+

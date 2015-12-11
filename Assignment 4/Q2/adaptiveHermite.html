@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script src="../tridiag.js"></script>
+<h1>An Interpolating Spline</h1>
+
+<p>Please input coordinates between 1 and 400 for four points, the origin is the upper left corner:</p>
+
+x0 <input id="x0" type="number" value="100"> y0 <input id="y0" type="number" value="300"> 
+x1 <input id="x1" type="number" value="100"> y1 <input id="y1" type="number" value="100"> <br>
+x2 <input id="x2" type="number" value="300"> y2 <input id="y2" type="number" value="100"> 
+x3 <input id="x3" type="number" value="300"> y3 <input id="y3" type="number" value="300"> <br>
+maxDeltaX <input id="deltaX" type="number" value="5"> maxDeltaY <input id="deltaY" type="number" value="5"><br \>
+Hermite Left, Bezier Right
+<button type="button" onclick="Interp()">Submit</button> <br> 
+<br>
+<br>
+
+<canvas id="hermiteCanvas" width="400" height="400"> </canvas>
+<canvas id="bezierCanvas" width="400" height="400"> </canvas>
+
+
+<script>
+function Interp() {
+
+var canvas = document.getElementById("hermiteCanvas");
+var context = canvas.getContext('2d');
+context.clearRect(0, 0, canvas.width, canvas.height);
+
+var canvas2 = document.getElementById("bezierCanvas");
+var context2 = canvas2.getContext('2d');
+context2.clearRect(0, 0, canvas2.width, canvas2.height);
+
+// gather input 
+	var x=[0,0,0,0];
+	var y=[100,100,100,100];
+	
+	var bezierX = [];
+	var bezierY = [];
+
+	breakFlag = 0;
+
+	x[0] = Number(document.getElementById("x0").value);
+	x[1] = Number(document.getElementById("x1").value);
+	x[2] = Number(document.getElementById("x2").value);
+	x[3] = Number(document.getElementById("x3").value);
+	y[0] = Number(document.getElementById("y0").value);
+	y[1] = Number(document.getElementById("y1").value);
+	y[2] = Number(document.getElementById("y2").value);
+	y[3] = Number(document.getElementById("y3").value); 
+	var deltaX = Number(document.getElementById("deltaX").value);
+	var deltaY = Number(document.getElementById("deltaY").value);
+
+// draw linear spline between points in grey
+      context.beginPath();
+      context.moveTo(x[0], y[0]);
+      context.lineTo(x[1], y[1]);
+      context.lineTo(x[2], y[2]);
+      context.lineTo(x[3], y[3]);
+      context.strokeStyle = "grey";
+      context.stroke();
+
+// draw linear spline between points in blue
+/*      context2.beginPath();
+      context2.moveTo(x[0], y[0]);
+      context2.lineTo(x[1], y[1]);
+      context2.lineTo(x[2], y[2]);
+      context2.lineTo(x[3], y[3]);
+      context2.strokeStyle = "blue";
+      context2.stroke();
+*/
+     
+// solve tridiagonal equations for x' and y', only right hand side of equation is different
+	var xm = solve( [1,1,1], [2,4,4,2], [1,1,1], [3*(x[1]-x[0]), 3*(x[2]-x[0]), 3*(x[3]-x[1]), 3*(x[3]-x[2])],4);
+	var ym = solve( [1,1,1], [2,4,4,2], [1,1,1], [3*(y[1]-y[0]), 3*(y[2]-y[0]), 3*(y[3]-y[1]), 3*(y[3]-y[2])],4);
+// Calculate the tangent of each point
+
+
+// draw ten line segments for each cubic segment
+
+ 	context.beginPath();
+ 	context.moveTo(x[0], y[0]);
+	
+	context2.beginPath();
+	context2.moveTo(x[0], y[0])
+	
+	bezierX.push(x[0]);
+	bezierY.push(y[0]);
+	
+	index = 1;
+	// each segment is from x[i], y[i] to x[i+1], y[i+1]
+	for(i=0;i<3;i++){
+		// step along the segment in steps of delta u = 0.1
+		// for efficiency, the weights could be computed once outside of this loop
+		// for an adaptive approach, the values of delta u will vary for each segment, and
+		// need to be computed inside the loop.
+		bezierX.push(x[i] + 1 / 3 * xm[i]);
+		bezierX.push(x[i + 1] - 1 / 3 * xm[i + 1]);
+		bezierX.push(x[i + 1]);
+		bezierY.push(y[i] + 1 / 3 * ym[i]);
+		bezierY.push(y[i + 1] - 1 / 3 * ym[i + 1]);
+		bezierY.push(y[i + 1]);
+
+		var u = 0;
+		while(1){
+			if(u > 1){
+				u = 1;
+			}
+			u2= u*u;
+			u3= u*u*u;
+			w0= 1-3*u2+2*u3;
+			w1= 3*u2-2*u3;
+			w2 = u3-2*u2+u;
+			w3= u3-u2;
+			xx = x[i]*w0+x[i+1]*w1+xm[i]*w2+xm[i+1]*w3;
+			yy = y[i]*w0+y[i+1]*w1+ym[i]*w2+ym[i+1]*w3;
+			context.lineTo(xx, yy);
+
+			if(breakFlag) {
+				breakFlag = 0;
+				break;
+			}
+
+			u += getUStep(x[i], y[i], xm[i], ym[i], x[i + 1], y[i + 1], xm[i + 1], ym[i + 1], xx, yy, u, deltaX, deltaY);
+			if(u > 1){
+				breakFlag = 1
+			}
+		}
+		
+		context2.bezierCurveTo(bezierX[index], bezierY[index ++], bezierX[index], bezierY[index ++], bezierX[index], bezierY[index ++]);
+	}
+	context2.strokeStyle = "black";
+	context2.stroke();
+    context.strokeStyle = "green";
+	context.stroke();
+       
+	context2.beginPath();   
+	context2.moveTo(x[0], y[0]);
+	index = 1;
+	while(index < bezierX.length){
+		context2.lineTo(bezierX[index], bezierY[index]);
+		index ++;
+	}
+	context2.strokeStyle = "red";
+	context2.stroke();
+}
+
+function getUStep(x0, y0, xd0, yd0, x1, y1, xd1, yd1, prevX, prevY, prevU, deltaX, deltaY){
+	var deltaUX = getU(x0, x1, xd0, xd1, prevX, prevU, deltaX);
+	var deltaUY = getU(y0, y1, yd0, yd1, prevY, prevU, deltaY);
+
+	return Math.min(deltaUY, deltaUX)
+}
+
+function getU(x0, x1, xd0, xd1, prevX, prevU, deltaX) {
+	var a = 2 * x0 - 2 * x1 + xd0 + xd1;
+	var b = -3 * x0 + 3 * x1 - 2 * xd0 - xd1;
+	var c = xd0;
+	var d = x0 -prevX + (x0 < x1 ? -1 : 1) * deltaX;
+	var alpha = - Math.pow(b, 3) / (27 * Math.pow(a, 3)) + (- d) / (2 * a) + b * c / (6 * Math.pow(a, 2));
+	var beta = c / (3 * a) - Math.pow(b, 2) / (9 * Math.pow(a, 2));
+
+	if(Math.pow(alpha, 2) + Math.pow(beta, 3) < 0){
+		var U1 = - b / (3 * a) + 2 * Math.sqrt(- beta) * Math.cos(Math.acos(alpha / Math.pow(- beta, 3 / 2)) / 3);
+		var U2 = - b / (3 * a) + 2 * Math.sqrt(- beta) * Math.cos((Math.acos(alpha / Math.pow(- beta, 3 / 2)) + 2 * Math.PI) / 3);
+		var U3 = - b / (3 * a) + 2 * Math.sqrt(- beta) * Math.cos((Math.acos(alpha / Math.pow(- beta, 3 / 2)) - 2 * Math.PI) / 3);
+
+		var uStep = Math.min.apply(Math,[U1, U2, U3].filter(isBigEnough(prevU))) - prevU;
+		if(uStep > 0){
+			return uStep;
+		}
+	}	
+	return 0.2;
+}
+
+function isBigEnough(value) {
+  return function(element, index, array) {
+    return (element >= value);
+  }
+}
+
+ 
+</script>
+
+</body>
+</html> 

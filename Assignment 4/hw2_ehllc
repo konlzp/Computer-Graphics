@@ -1,0 +1,188 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: accident; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE accident (
+    report_number character varying(10) NOT NULL,
+    date date,
+    location character varying(10)
+);
+
+
+--
+-- Name: car; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE car (
+    car_regnum character varying(10) NOT NULL,
+    model character varying(10),
+    year integer
+);
+
+
+--
+-- Name: owns; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE owns (
+    license_number character varying(10) NOT NULL,
+    car_regnum character varying(10) NOT NULL
+);
+
+
+--
+-- Name: participated; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE participated (
+    license_number character varying(10) NOT NULL,
+    car_regnum character varying(10) NOT NULL,
+    report_number character varying(10) NOT NULL,
+    damage_amount integer
+);
+
+
+--
+-- Name: person; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE person (
+    license_number character varying(10) NOT NULL,
+    name character varying(50),
+    address character varying(50)
+);
+
+
+--
+-- Data for Name: accident; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY accident (report_number, date, location) FROM stdin;
+654321	2015-10-18	York St.
+77777	2015-10-01	nh
+\.
+
+
+--
+-- Data for Name: car; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY car (car_regnum, model, year) FROM stdin;
+321456	FORD F	2015
+432567	PORCHE 911	2013
+111222	BENZ Z	2222
+\.
+
+
+--
+-- Data for Name: owns; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY owns (license_number, car_regnum) FROM stdin;
+\.
+
+
+--
+-- Data for Name: participated; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY participated (license_number, car_regnum, report_number, damage_amount) FROM stdin;
+123456	321456	654321	5000
+123456	432567	77777	10000
+\.
+
+
+--
+-- Data for Name: person; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY person (license_number, name, address) FROM stdin;
+123456	paul	York St.
+\.
+
+
+--
+-- Name: accident_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY accident
+    ADD CONSTRAINT accident_pkey PRIMARY KEY (report_number);
+
+
+--
+-- Name: car_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY car
+    ADD CONSTRAINT car_pkey PRIMARY KEY (car_regnum);
+
+
+--
+-- Name: owns_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY owns
+    ADD CONSTRAINT owns_pkey PRIMARY KEY (license_number, car_regnum);
+
+
+--
+-- Name: participated_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY participated
+    ADD CONSTRAINT participated_pkey PRIMARY KEY (license_number, car_regnum, report_number);
+
+
+--
+-- Name: person_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY person
+    ADD CONSTRAINT person_pkey PRIMARY KEY (license_number);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: -
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

@@ -1,0 +1,5 @@
+OS: MAC OS X
+Browser: Google Chrome (The browser should support SET structure in order to show Q4)
+
+For Q2: adaptive Hermite: the criterion used is to set a maximum value for X increment and Y increment, the resulting delta u makes sure that both deltaX and deltaY are less than the given maximum X increment and Y increment.
+

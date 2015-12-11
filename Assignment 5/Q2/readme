@@ -1,0 +1,1 @@
+The scaling used in the code is I first calculate the maximum of all C values, scale the other C values accordingly, then assign each pixel with a color restricted between skyblue and white, with the maximum C has pure white.

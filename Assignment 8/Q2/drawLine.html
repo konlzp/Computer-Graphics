@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>An Interpolating Spline</h1>
+
+<p>Please input coordinates between 1 and 400 for four points, the origin is the upper left corner:</p>
+
+<input id="euler" type="radio" name="drawType" checked> Euler <input id="midpoint" type="radio" name="drawType"> MidPoint <br />
+<input id="1s" type="radio" name="drawTime" checked> 1s <input id="0.1s" type="radio" name="drawTime"> 0.1s <br />
+<button type="button" onclick="Interp()">Submit</button> <br> 
+<br>
+<br>
+
+<canvas id="canvas" width="400" height="400"> </canvas>
+
+
+<script>
+var scale = 30;
+
+function eulerNext(x, time) {
+	var vx = x[1] - 5.0 + (5.0 - x[0]) / 2.0;
+	var vy = (5.0 - x[1]) / 2.0 + (5.0 - x[0]);
+
+	return [vx * time, vy * time];
+}
+
+function midPointNext(x, time) {
+	var eulerPointTemp = eulerNext(x, time);
+	var nextX = [x[0], x[1]];
+	nextX[0] += eulerPointTemp[0] / 2.0;
+	nextX[1] += eulerPointTemp[1] / 2.0;
+
+	//var midPoint = [x[0] / 2, x[1] / 2];
+	return eulerNext(nextX, time);
+}
+
+function Interp() {
+
+var canvas = document.getElementById("canvas");
+var context = canvas.getContext('2d');
+context.clearRect(0, 0, canvas.width, canvas.height);
+
+	var x=[4, 6];
+
+	if(document.getElementById("1s").checked) {
+		var time = 1.0;
+	}
+	else {
+		var time = 0.1;
+	}
+
+	context.beginPath();
+	context.moveTo(x[0] * scale, x[1] * scale);
+	for(var i = 0; i < 5 / time; i ++) {
+		if(document.getElementById("euler").checked) {
+			xTemp = eulerNext(x, time);
+		}
+		else {
+			xTemp = midPointNext(x, time);
+		}
+		x[0] = xTemp[0] + x[0];
+		x[1] = xTemp[1] + x[1];
+		context.lineTo(Math.floor(x[0] * scale), Math.floor(x[1] * scale));
+	}
+	context.strokeStyle = "blue";
+	context.stroke();
+}
+ 
+</script>
+
+</body>
+</html> 
+
+
+

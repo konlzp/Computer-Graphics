@@ -1,0 +1,25 @@
+A Simple Adventure Game Proposal ----- by Paul
+
+For the final project, I am thinking about making an adventure game based on the NVMC program. The basic scene in the game should consists of normal land scene, trees that can interact with, building made out of basic cubes and characters that can move around.
+
+The basic actions of the hero should have:
+1. Moving around using keyboards. (WASD) How to make a natural walking can be painful.
+2. Fighting using mouse. (left click) How to make a natural sword swinging can be painful.
+3. Talking with other characters using keyboards. (E) Can make use of the message panel on the right of the NVMC program.
+
+The actions of a tree:
+1. A tree can block the characters when it's complete.
+2. The characters can chop off trees using fighting action. Transformation shall be performed. (Rotate 90 degree around its root)
+
+The actions of a character:
+1. The character can be speaked with using talking. Need to check if the character is near the hero, might be an O(n) process.
+2. The character can be killed using fighting. (Need to check if he/she is in the valid area of a sword swinging)(Rotate 90 degree around his/her feet, translation of upper torso and lower torso)
+
+The actions of buildings:
+1. Buildings block characters.
+
+The challenges may include, but not limited to:
+1. Complex characters, especially the moving of limbs.
+2. Collision detection, detecting if building should block the character & sword has killed the character.
+3. Random/Not random moving of the characters.
+4. The design of dialog exchange.

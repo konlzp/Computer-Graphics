@@ -1,0 +1,7 @@
+The main difficulty of this code is how to decide whether the ray goes through the primitive, if it does, what is the distance.
+
+The method used in the program is Newton's algorithm, that uses one point to estimate the root of a certain equation. So it is basically, a bisection algorithm with only one point.
+
+The code does not only provide an orthogonal view, but the view can be customarilly set by user, so I guess it's kinda superior. 
+
+However, there is one issue about this code, that is, it performs poorly when t & q has a value less than 1.
